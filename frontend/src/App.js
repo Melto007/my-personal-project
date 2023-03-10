@@ -8,6 +8,8 @@ import Register from './pages/authentication/Register.js'
 import HomePage from './pages/HomePage.js'
 import Header from './pages/Header.js'
 
+import './static/css/styles.css'
+
 const router = createBrowserRouter([
   {
     path: '/',

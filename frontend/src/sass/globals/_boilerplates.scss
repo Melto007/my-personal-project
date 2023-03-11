@@ -8,6 +8,15 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+ul li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: u.$blackColor;
+}
+
 @media screen and (min-width: u.rem(1440)) {
     .container {
         width: 1440px;

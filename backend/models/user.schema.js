@@ -42,6 +42,10 @@ userSchema.pre("save", async function(next) {
 })
 
 userSchema.methods = {
+    comparePassword: async function(enteredPassword) {
+        return await bcrypt.compare(enteredPassword, this.password) 
+    },  
+
     getJwtToken: function() {
         return jwt.sign(
             {

@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import AuthRoles from '../utils/AuthRoles.js'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import config from '../config/index.js'
 
 const userSchema = new mongoose.Schema(
     {
@@ -16,7 +19,8 @@ const userSchema = new mongoose.Schema(
         password: {
             type: String,
             required: [true, "Password field is required"],
-            minLength: [8, "Password contains minimum of 8 characters"]
+            minLength: [8, "Password contains minimum of 8 characters"],
+            select: false
         },
         role: {
             type: String,
@@ -31,4 +35,25 @@ const userSchema = new mongoose.Schema(
     }
 )
 
-export default mongoose.Model("User", userSchema)
+userSchema.pre("save", async function(next) {
+    if(!this.isModified("password")) return next()
+    this.password = await bcrypt.hash(this.password, 12)
+    next()
+})
+
+userSchema.methods = {
+    getJwtToken: function() {
+        return jwt.sign(
+            {
+                _id: this._id,
+                role: this.role
+            },
+            config.JWT_SECRET,
+            {
+                expiresIn: config.JWT_EXPIRES
+            }
+        )
+    }
+}
+
+export default mongoose.model("User", userSchema)
